@@ -92,10 +92,10 @@ public class TaskManager {
             case GET_TASK_BY_ID_PARAM -> new Response(List.of(taskDao.get(userParameter)));
             case DELETE_TASK_BY_ID_PARAM -> new Response(taskDao.delete(userParameter));
             case INSERT_SUBTASK_BY_TASK_ID_PARAM -> getResponseForInsertSubtask(taskDao, reader, userParameter);
-            case UPDATE_SUBTASK_BY_TASK_ID -> getResponseForUpdateSubtask(taskDao, reader, userParameter);
-            case DELETE_SUBTASK_BY_TASK_ID -> getResponseForDeleteSubtask(taskDao, reader, userParameter);
+            case UPDATE_SUBTASK_BY_TASK_ID_PARAM -> getResponseForUpdateSubtask(taskDao, reader, userParameter);
+            case DELETE_SUBTASK_BY_TASK_ID_PARAM -> getResponseForDeleteSubtask(taskDao, reader, userParameter);
             case SEARCH_TASKS_BY_DESCRIPTION_PARAM -> new Response(taskDao.searchByDescription(userParameter));
-            case SEARCH_SUB_TASKS_BY_DESCRIPTION_PARAM -> new Response(taskDao.searchBySubTaskName(userParameter));
+            case SEARCH_SUB_TASKS_BY_NAME_PARAM -> new Response(taskDao.searchBySubTaskName(userParameter));
             case HELP -> new Response(UserCommand.getCommands());
             default -> {
                 System.out.println("Invalid command");
@@ -105,6 +105,7 @@ public class TaskManager {
     }
 
     private static @NotNull Response getResponseForDeleteSubtask(TaskDao taskDao, BufferedReader reader, String userParameter) {
+        System.out.println("Enter sub-task order number to delete:");
         int orderNumberToDelete = getOrderNumberFromConsole(reader);
         return new Response(taskDao.deleteSubTaskByOrder(userParameter, orderNumberToDelete));
     }
@@ -119,6 +120,7 @@ public class TaskManager {
         Task mainTask = taskDao.get(userParameter);
         List<SubTask> subTasksFromConsole = createSubTasksFromConsole(reader);
         mainTask.getSubTasks().addAll(subTasksFromConsole);
+        taskDao.save(mainTask);
         return new Response(List.of(mainTask));
     }
 
@@ -131,8 +133,6 @@ public class TaskManager {
 
     private static @NotNull Response getResponseForInsertNewTask(TaskDao taskDao, BufferedReader reader) {
         var task = createTaskFromConsole(reader, new Task());
-        List<SubTask> subTasks = createSubTasksFromConsole(reader);
-        task.setSubTasks(subTasks);
         taskDao.save(task);
         return new Response(List.of(task));
     }

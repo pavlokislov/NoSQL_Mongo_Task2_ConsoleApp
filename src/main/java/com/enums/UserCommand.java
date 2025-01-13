@@ -19,10 +19,10 @@ public enum UserCommand {
     GET_TASK_BY_ID_PARAM("get task by id"),
     DELETE_TASK_BY_ID_PARAM("delete task by id"),
     INSERT_SUBTASK_BY_TASK_ID_PARAM("insert subtask by task id"),
-    UPDATE_SUBTASK_BY_TASK_ID("update subtask by task id"),
-    DELETE_SUBTASK_BY_TASK_ID("delete subtask by task id"),
+    UPDATE_SUBTASK_BY_TASK_ID_PARAM("update subtask by task id"),
+    DELETE_SUBTASK_BY_TASK_ID_PARAM("delete subtask by task id"),
     SEARCH_TASKS_BY_DESCRIPTION_PARAM("search tasks by description"),
-    SEARCH_SUB_TASKS_BY_DESCRIPTION_PARAM("search sub tasks by description"),
+    SEARCH_SUB_TASKS_BY_NAME_PARAM("search sub tasks by description"),
     ERROR("error"),
     HELP("help"),
     EXIT("exit");

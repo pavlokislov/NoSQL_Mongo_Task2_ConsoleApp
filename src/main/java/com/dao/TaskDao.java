@@ -10,6 +10,7 @@ import dev.morphia.UpdateOptions;
 import dev.morphia.query.filters.Filters;
 import dev.morphia.query.updates.UpdateOperators;
 import lombok.RequiredArgsConstructor;
+import org.bson.Document;
 import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
@@ -29,14 +30,12 @@ public class TaskDao {
     }
 
     public Task get(String id) {
-        return datastore.find(Task.class)
-                .filter(Filters.eq("_id", new ObjectId(id)))
+        return datastore.find(Task.class, new Document("_id", id))
                 .first();
     }
 
     public boolean delete(String id) {
-        DeleteResult result = datastore.find(Task.class)
-                .filter(Filters.eq("_id", new ObjectId(id)))
+        DeleteResult result = datastore.find(Task.class, new Document("_id", id))
                 .delete();
         return result.wasAcknowledged();
     }
@@ -55,8 +54,7 @@ public class TaskDao {
     }
 
     public List<Task> findTasksByCategory(Category category) {
-        return datastore.find(Task.class)
-                .filter(Filters.eq("category", category))
+        return datastore.find(Task.class, new Document("category", category))
                 .stream()
                 .toList();
     }
@@ -71,8 +69,7 @@ public class TaskDao {
     public boolean update(String id, Task task) {
 
         UpdateOptions options = new UpdateOptions();
-        UpdateResult result = datastore.find(Task.class)
-                .filter(Filters.eq("_id", new ObjectId(id)))
+        UpdateResult result = datastore.find(Task.class, new Document("_id", id))
                 .update(
                         options,
                         UpdateOperators.set("name", task.getName()),
@@ -92,15 +89,13 @@ public class TaskDao {
     }
 
     public List<Task> searchBySubTaskName(String searchTerm) {
-        return datastore.find(Task.class)
-                .filter(Filters.regex("subTasks.name").pattern(searchTerm).caseInsensitive())
+        return datastore.find(Task.class, new Document("subTasks.name", searchTerm))
                 .stream()
                 .toList();
     }
 
     public boolean deleteSubTaskByOrder(String taskId, int order) {
-        Task task = datastore.find(Task.class)
-                .filter(Filters.eq("_id", new ObjectId(taskId)))
+        Task task = datastore.find(Task.class, new Document("_id", taskId))
                 .first();
         if (task == null) {
             System.out.println("Task not found");
@@ -116,16 +111,15 @@ public class TaskDao {
     }
 
     public boolean updateSubTaskByOrder(String taskId, int order, SubTask newSubTaskName) {
-        Task task = datastore.find(Task.class)
-                .filter(Filters.eq("_id", new ObjectId(taskId)))
+        Task task = datastore.find(Task.class, new Document("_id", taskId))
                 .first();
         if (task == null) {
             System.out.println("Task not found");
             return false;
         }
         if (task.getSubTasks().size() >= order && order > 0) {
-            task.getSubTasks().get(order-1).setName(newSubTaskName.getName());
-            task.getSubTasks().get(order-1).setName(newSubTaskName.getDescription());
+            task.getSubTasks().get(order - 1).setName(newSubTaskName.getName());
+            task.getSubTasks().get(order - 1).setDescription(newSubTaskName.getDescription());
             return update(task.getId(), task);
         } else {
             System.out.println("Invalid subtask order.");
