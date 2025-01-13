@@ -1,37 +1,30 @@
 package com.entity;
 
+import dev.morphia.annotations.Entity;
+import dev.morphia.annotations.Id;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
-import org.bson.codecs.pojo.annotations.BsonProperty;
-import org.bson.types.ObjectId;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
-import java.util.Date;
+import java.util.ArrayList;
 import java.util.List;
-
 @Builder
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@Entity("tasks")
+//@Indexes({@Index(fields = {@Field("description")})})
 public class Task {
 
-    @BsonProperty("_id")
-    private ObjectId id;
-    @BsonProperty("creationDate")
-    private LocalDateTime creationDate;
-    @BsonProperty("deadline")
+    @Id
+    private String id;
+    private LocalDate creationDate;
     private LocalDate deadline;
-    @BsonProperty("name")
     private String name;
-    @BsonProperty("description")
     private String description;
-    @BsonProperty("subTasks")
-    private List<SubTask> subTasks;
-    @BsonProperty("category")
+    private List<SubTask> subTasks = new ArrayList<>();
     private Category category;
 
     @Override

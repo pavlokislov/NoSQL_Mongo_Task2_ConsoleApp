@@ -1,5 +1,6 @@
 package com.entity;
 
+import dev.morphia.annotations.Embedded;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
